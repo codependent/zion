@@ -12,7 +12,10 @@ case class GetDepartmentByCodeDrivenPortImpl(departmentRepository: DepartmentRep
 }
 
 object GetDepartmentByCodeDrivenPortImpl {
+
+  val fn: DepartmentRepository => GetDepartmentByCodeDrivenPortImpl = (dep : DepartmentRepository) => GetDepartmentByCodeDrivenPortImpl(dep)
+
   val layer: ZLayer[DepartmentRepository, Nothing, GetDepartmentByCodeDrivenPort] = 
-    ZLayer.fromFunction( (dep : DepartmentRepository) => GetDepartmentByCodeDrivenPortImpl(dep))
+    ZLayer.fromFunction( GetDepartmentByCodeDrivenPortImpl.apply _)
 
 }

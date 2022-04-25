@@ -12,7 +12,7 @@ import zio.*
 
 object HexApp extends scala.App {
 
-  val program = for {
+  val program: ZIO[GetDepartmentByCodeDrivenPort, Throwable, Department] = for {
     srv <- ZIO.service[GetDepartmentByCodeDrivenPort]
     dep <- srv.execute("asdf")
     _   <- Console.printLine(dep)
@@ -20,7 +20,7 @@ object HexApp extends scala.App {
   } yield dep
 
   //val program = GetDepartmentByCodeDrivenPort.exec("asdf")
-  val x = program.mapError(e => e)
+  val x: ZIO[GetDepartmentByCodeDrivenPort, Throwable, Department] = program.mapError(e => e)
 
   val mainEffect: ZIO[Any, Throwable, Department] = program.provide(
     DepartmentRepositoryImpl.layer,
