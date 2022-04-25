@@ -9,23 +9,22 @@ import scala.io.StdIn
 object LoggingApp extends ZIOAppDefault {
 
   trait Logger {
-    def log(message: String): UIO[Unit]
+    def log(message: String): IO[IOException, Unit]
   }
 
   case class LoggerConsoleImpl() extends Logger {
-    def log(message: String) = {
-      ZIO.succeed(printLine(message))
+    def log(message: String) = Console.printLine(message)
+  }
+
+    object LoggerConsoleImpl {
+      val layer: ZLayer[Any, Nothing, Logger] = ZLayer.succeed(new LoggerConsoleImpl())
     }
-  }
-  object LoggerConsoleImpl {
-    val layer: ZLayer[Any, Nothing, Logger] = ZLayer.succeed(new LoggerConsoleImpl())
-  }
 
-  val program = for {
-    logger <- ZIO.service[Logger]
-    _ <- logger.log("Hey")
-  } yield ()
+    val program: ZIO[Logger, IOException, Unit] = for {
+      logger <- ZIO.service[Logger]
+      _ <- logger.log("Hey")
+    } yield ()
 
-  override def run = program.provideLayer(LoggerConsoleImpl.layer)
+    override def run = program.provideLayer(LoggerConsoleImpl.layer)
 
 }
