@@ -21,8 +21,9 @@ object LoggingApp extends ZIOAppDefault {
     }
 
     val program: ZIO[Logger, IOException, Unit] = for {
-      logger <- ZIO.service[Logger]
-      _ <- logger.log("Hey")
+      //logger <- ZIO.service[Logger]
+      //_ <- logger.log("Hey")
+      _ <- ZIO.serviceWithZIO[Logger](_.log("Hi!"))
     } yield ()
 
     override def run = program.provideLayer(LoggerConsoleImpl.layer)
